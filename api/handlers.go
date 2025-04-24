@@ -25,15 +25,15 @@ func InitDB() {
 	err = godotenv.Load("docker/.env")
 	checkError(err)
 
-	db_url := os.Getenv("HORSE_DATABASE_URL")
-	db_name := os.Getenv("HORSE_DATABASE_NAME")
-	db_user := os.Getenv("HORSE_DATABASE_USER")
-	db_password := os.Getenv("HORSE_DATABASE_PASS")
-	db_port := os.Getenv("HORSE_DATABASE_PORT")
+	dbUrl := os.Getenv("HORSE_DATABASE_URL")
+	dbName := os.Getenv("HORSE_DATABASE_NAME")
+	dbUser := os.Getenv("HORSE_DATABASE_USER")
+	dbPassword := os.Getenv("HORSE_DATABASE_PASS")
+	dbPort := os.Getenv("HORSE_DATABASE_PORT")
 
-	dsn := "host=" + db_url + " user=" +
-		db_user + " password=" + db_password + " dbname=" +
-		db_name + " port=" + db_port + " sslmode=disable"
+	dsn := "host=" + dbUrl + " user=" +
+		dbUser + " password=" + dbPassword + " dbname=" +
+		dbName + " port=" + dbPort + " sslmode=disable"
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	checkError(err)
