@@ -1,9 +1,13 @@
-package api
+package models
 
 import "github.com/gin-gonic/gin"
 
 type Horse struct {
-	ID uint `json:"id" gorm:"primaryKey"`
+	ID     uint   `json:"id" gorm:"primaryKey"`
+	Name   string `json:"name"`
+	Breed  string `json:"breed"`
+	Years  uint   `json:"years"`
+	Gender string `json:"gender"`
 }
 
 type JsonResponse struct {
@@ -20,4 +24,9 @@ func ResponseJSON(context *gin.Context, status int, message string, data any) {
 	}
 
 	context.JSON(status, response)
+}
+
+type LoginRequest struct {
+	Mail     string `json:"mail"`
+	Password string `json:"password"`
 }
