@@ -2,14 +2,6 @@ package models
 
 import "github.com/gin-gonic/gin"
 
-type Horse struct {
-	ID     uint   `json:"id" gorm:"primaryKey"`
-	Name   string `json:"name"`
-	Breed  string `json:"breed"`
-	Years  uint   `json:"years"`
-	Gender string `json:"gender"`
-}
-
 type JsonResponse struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`

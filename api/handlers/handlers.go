@@ -17,7 +17,13 @@ func CreateHorse(context *gin.Context) {
 		return
 	}
 
-	DB.Create(&horse)
+	{
+		execution := DB.Create(&horse)
+		if execution.Error != nil {
+			models.ResponseJSON(context, http.StatusInternalServerError, "Unable to create the horse", nil)
+			return
+		}
+	}
 	models.ResponseJSON(context, http.StatusCreated, "Horse created successfully", horse)
 }
 

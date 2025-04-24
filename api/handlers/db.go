@@ -44,7 +44,11 @@ func InitDB() {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	checkError(err)
 
-	if err := DB.AutoMigrate(&models.Horse{}); err != nil {
+	if err := DB.AutoMigrate(
+		&models.User{},
+		&models.Role{},
+		&models.Horse{},
+	); err != nil {
 		log.Fatal("Failed to migrate schema:", err)
 	}
 }

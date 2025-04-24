@@ -12,7 +12,8 @@ func main() {
 	r := gin.Default()
 
 	// Public routes
-	r.POST("/login", handlers.GenerateJWT)
+	r.POST("/login", handlers.Login)
+	r.POST("/signup", handlers.SignUp)
 
 	// protected routes
 	protected := r.Group("/", middleware.JWTAuthMiddleware())
