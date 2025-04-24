@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"api/api/models"
 
@@ -14,6 +15,11 @@ import (
 
 // Secret key for signing JWT
 var JwtSecret = []byte(os.Getenv("SECRET_TOKEN"))
+
+func extractClaims(token *jwt.Token) jwt.MapClaims {
+	claims, _ := token.Claims.(jwt.MapClaims)
+	return claims
+}
 
 func JWTAuthMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
@@ -31,7 +37,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		}
 
 		// parse and validate the token
-		_, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 			// Validate the signing method
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -43,9 +49,23 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			context.Abort()
 			return
 		}
-		// TODO: I will have to check the expiration time here and return the id and roles of the user
+
+		claims := extractClaims(token)
+
+		expiration := time.Unix(int64(claims["expiration"].(float64)), 0)
+		if time.Now().UTC().After(expiration) {
+			models.ResponseJSON(context, http.StatusUnauthorized, "Token expired", nil)
+			context.Abort()
+			return
+		}
 
 		// Token is valid, proceed to the next handler
+		var roles []string
+		for _, role := range claims["roles"].([]any) {
+			roles = append(roles, role.(string))
+		}
+		context.Set("user_id", uint(claims["user_id"].(float64)))
+		context.Set("roles", roles)
 		context.Next()
 	}
 }

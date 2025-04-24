@@ -14,13 +14,18 @@ import (
 )
 
 const HASH_COST = 14
+const EXPIRATION_MINUTES = 30
 
 func generateJWT(context *gin.Context, user models.User) *string {
-	expirationTime := time.Now().Add(15 * time.Minute)
+	var roleNames []string
+	for _, role := range user.Roles {
+		roleNames = append(roleNames, role.Name)
+	}
+	expirationTime := time.Now().Add(EXPIRATION_MINUTES * time.Minute)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"expiration": expirationTime.Unix(),
 		"user_id":    user.ID,
-		"roles":      user.Roles,
+		"roles":      roleNames,
 	})
 	// Sign the token
 	{
