@@ -57,7 +57,23 @@ func UpdateUser(context *gin.Context) {
 	}
 	user.ID = userId
 
-	DB.Model(&user).Updates(user)
+	if err := DB.Model(&user).Updates(user).Error; err != nil {
+		models.ResponseJSON(context, http.StatusInternalServerError, "Unable to update user", nil)
+		return
+	}
 	DB.First(&user, user.ID)
 	models.ResponseJSON(context, http.StatusOK, "User updated successfully", models.ToUserDto(user))
+}
+
+func DeleteHorse(context *gin.Context) {
+	userId := context.Keys["user_id"].(uint)
+	horseId := context.Param("id")
+	var horse models.Horse
+
+	if err := DB.Where("id = ? AND owner = ?", horseId, userId).First(&horse).Error; err != nil {
+		models.ResponseJSON(context, http.StatusNotFound, "Horse not found", nil)
+		return
+	}
+	DB.Delete(&horse)
+	models.ResponseJSON(context, http.StatusOK, "Horse deleted successfully", nil)
 }

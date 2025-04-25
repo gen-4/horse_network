@@ -21,6 +21,7 @@ func main() {
 		protected.POST("/horse", handlers.CreateHorse)
 		protected.GET("/horses", handlers.GetHorses)
 		protected.PUT("/user", handlers.UpdateUser)
+		protected.DELETE("/horse/:id", handlers.DeleteHorse)
 	}
 
 	r.Run("localhost:8080")
