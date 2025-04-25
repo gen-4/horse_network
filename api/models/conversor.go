@@ -34,3 +34,14 @@ func ToUserDto(user User) UserDto {
 		Horses:   ToHorseDtos(user.Horses),
 	}
 }
+
+func UpdateUserToUser(uUser UpdateUser) User {
+	return User{
+		Username: uUser.Username,
+		Mail:     uUser.Mail,
+		Password: uUser.Password,
+		Age:      uUser.Age,
+		Gender:   uUser.Gender,
+		Country:  uUser.Country,
+	}
+}

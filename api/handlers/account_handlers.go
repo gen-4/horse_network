@@ -6,6 +6,7 @@ import (
 	"api/api/models"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateHorse(context *gin.Context) {
@@ -35,4 +36,28 @@ func GetHorses(context *gin.Context) {
 	var horses []models.Horse
 	DB.Where("owner = ?", userId).Find(&horses)
 	models.ResponseJSON(context, http.StatusOK, "Horses retrieved successfully", models.ToHorseDtos(horses))
+}
+
+func UpdateUser(context *gin.Context) {
+	userId := context.Keys["user_id"].(uint)
+	var user models.User
+	var updateUser models.UpdateUser
+	if err := context.ShouldBindJSON(&updateUser); err != nil {
+		models.ResponseJSON(context, http.StatusBadRequest, "Invalid input: "+err.Error(), nil)
+		return
+	}
+	user = models.UpdateUserToUser(updateUser)
+	if user.Password != "" {
+		if encryptedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), HASH_COST); err != nil {
+			models.ResponseJSON(context, http.StatusInternalServerError, "Unable to hash password", nil)
+			return
+		} else {
+			user.Password = string(encryptedPass)
+		}
+	}
+	user.ID = userId
+
+	DB.Model(&user).Updates(user)
+	DB.First(&user, user.ID)
+	models.ResponseJSON(context, http.StatusOK, "User updated successfully", models.ToUserDto(user))
 }

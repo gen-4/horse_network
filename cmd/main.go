@@ -13,13 +13,14 @@ func main() {
 
 	// Public routes
 	r.POST("/login", handlers.Login)
-	r.POST("/signup", handlers.SignUp)
+	r.PUT("/signup", handlers.SignUp)
 
 	// protected routes
 	protected := r.Group("/", middleware.JWTAuthMiddleware())
 	{
 		protected.POST("/horse", handlers.CreateHorse)
 		protected.GET("/horses", handlers.GetHorses)
+		protected.PUT("/user", handlers.UpdateUser)
 	}
 
 	r.Run("localhost:8080")
