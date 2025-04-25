@@ -30,3 +30,27 @@ func CreateGroup(context *gin.Context) {
 
 	models.ResponseJSON(context, http.StatusCreated, "Group creation successful", nil)
 }
+
+func JoinGroup(context *gin.Context) {
+	userId := context.Keys["user_id"].(uint)
+	groupId := context.Param("id")
+	var user models.User
+	var group models.Group
+
+	if err := DB.First(&user, userId).Error; err != nil {
+		models.ResponseJSON(context, http.StatusNotFound, "User not found", nil)
+		return
+	}
+	if err := DB.First(&group, groupId).Preload("Users").Error; err != nil {
+		models.ResponseJSON(context, http.StatusNotFound, "Group not found", nil)
+		return
+	}
+
+	group.Users = append(group.Users, user)
+	if err := DB.Save(group).Error; err != nil {
+		models.ResponseJSON(context, http.StatusInternalServerError, "Unable to join the group: "+err.Error(), nil)
+		return
+	}
+
+	models.ResponseJSON(context, http.StatusOK, "Group joined", nil)
+}
