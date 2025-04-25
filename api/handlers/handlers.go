@@ -17,6 +17,9 @@ func CreateHorse(context *gin.Context) {
 		return
 	}
 
+	userId := context.Keys["user_id"].(uint)
+	horse.Owner = &userId
+
 	{
 		execution := DB.Create(&horse)
 		if execution.Error != nil {
