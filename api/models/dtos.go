@@ -22,3 +22,22 @@ type LoginRequest struct {
 	Mail     string `json:"mail"`
 	Password string `json:"password"`
 }
+
+type UserDto struct {
+	ID       uint       `json:"id"`
+	Username string     `json:"username"`
+	Mail     string     `json:"mail"`
+	Age      uint       `json:"age"`
+	Gender   string     `json:"gender"`
+	Country  string     `json:"country"`
+	Roles    []Role     `json:"roles"`
+	Horses   []HorseDto `json:"horses"`
+}
+
+type HorseDto struct {
+	ID     uint   `json:"id"`
+	Name   string `json:"name"`
+	Breed  string `json:"breed"`
+	Age    uint   `json:"age"`
+	Gender string `json:"gender"`
+}

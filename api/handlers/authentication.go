@@ -61,7 +61,7 @@ func Login(context *gin.Context) {
 
 	if token := generateJWT(context, user); token != nil {
 		models.ResponseJSON(context, http.StatusOK, "Login successful", gin.H{
-			"user":  user,
+			"user":  models.ToUserDto(user),
 			"token": token,
 		})
 	}
@@ -71,7 +71,7 @@ func SignUp(context *gin.Context) {
 	var user models.User
 	var userRole models.Role
 	if err := context.ShouldBindJSON(&user); err != nil {
-		models.ResponseJSON(context, http.StatusBadRequest, "Invalid input", nil)
+		models.ResponseJSON(context, http.StatusBadRequest, "Invalid input: "+err.Error(), nil)
 		return
 	}
 
@@ -93,7 +93,7 @@ func SignUp(context *gin.Context) {
 	}
 	if token := generateJWT(context, user); token != nil {
 		models.ResponseJSON(context, http.StatusCreated, "Signup successful", gin.H{
-			"user":  user,
+			"user":  models.ToUserDto(user),
 			"token": token,
 		})
 	}
