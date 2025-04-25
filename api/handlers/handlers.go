@@ -31,7 +31,8 @@ func CreateHorse(context *gin.Context) {
 }
 
 func GetHorses(context *gin.Context) {
+	userId := context.Keys["user_id"].(uint)
 	var horses []models.Horse
-	DB.Find(&horses)
+	DB.Where("owner = ?", userId).Find(&horses)
 	models.ResponseJSON(context, http.StatusOK, "Horses retrieved successfully", horses)
 }
