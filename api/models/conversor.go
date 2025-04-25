@@ -1,12 +1,6 @@
 package models
 
-func Map[T any, R any](arr []T, f func(T) R) []R {
-	appliedArr := make([]R, len(arr))
-	for i, value := range arr {
-		appliedArr[i] = f(value)
-	}
-	return appliedArr
-}
+import "api/api/utils"
 
 func ToHorseDto(horse Horse) HorseDto {
 	return HorseDto{
@@ -19,7 +13,7 @@ func ToHorseDto(horse Horse) HorseDto {
 }
 
 func ToHorseDtos(horses []Horse) []HorseDto {
-	return Map(horses, ToHorseDto)
+	return utils.Map(horses, ToHorseDto)
 }
 
 func ToUserDto(user User) UserDto {

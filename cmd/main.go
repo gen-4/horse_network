@@ -24,7 +24,7 @@ func main() {
 		protected.DELETE("/horse/:id", handlers.DeleteHorse)
 		protected.POST("/group", handlers.CreateGroup)
 		protected.POST("/group/:id/join", handlers.JoinGroup)
-
+		protected.POST("/group/:id/leave", handlers.LeaveGroup)
 	}
 
 	router.Run("localhost:8080")
