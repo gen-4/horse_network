@@ -9,20 +9,22 @@ import (
 
 func main() {
 	handlers.InitDB()
-	r := gin.Default()
+	router := gin.Default()
 
 	// Public routes
-	r.POST("/login", handlers.Login)
-	r.PUT("/signup", handlers.SignUp)
+	router.POST("/login", handlers.Login)
+	router.PUT("/signup", handlers.SignUp)
 
 	// protected routes
-	protected := r.Group("/", middleware.JWTAuthMiddleware())
+	protected := router.Group("/", middleware.JWTAuthMiddleware())
 	{
 		protected.POST("/horse", handlers.CreateHorse)
 		protected.GET("/horses", handlers.GetHorses)
 		protected.PUT("/user", handlers.UpdateUser)
 		protected.DELETE("/horse/:id", handlers.DeleteHorse)
+		protected.POST("/group", handlers.CreateGroup)
+
 	}
 
-	r.Run("localhost:8080")
+	router.Run("localhost:8080")
 }

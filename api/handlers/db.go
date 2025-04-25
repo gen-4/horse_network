@@ -48,6 +48,7 @@ func InitDB() {
 		&models.User{},
 		&models.Role{},
 		&models.Horse{},
+		&models.Group{},
 	); err != nil {
 		log.Fatal("Failed to migrate schema:", err)
 	}

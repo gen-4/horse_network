@@ -25,3 +25,9 @@ type User struct {
 	Roles    []Role  `json:"roles" gorm:"many2many:user_roles; constraint:OnDelete:SET NULL;"`
 	Horses   []Horse `json:"horses" gorm:"foreignKey:Owner; constraint:OnDelete:SET NULL;"`
 }
+
+type Group struct {
+	ID    uint   `json:"id" gorm:"primaryKey"`
+	Name  string `json:"name" gorm:"not null;" binding:"required,min=3"`
+	Users []User `json:"users" gorm:"many2many:group_users; constraint:OnDelete:SET NULL;"`
+}
