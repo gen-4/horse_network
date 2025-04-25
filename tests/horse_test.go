@@ -7,7 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"api/api"
+	"api/api/handlers"
+	"api/api/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,9 +16,9 @@ import (
 func TestCreateHorse(t *testing.T) {
 	SetupTestDB()
 	router := gin.Default()
-	router.POST("/horse", api.CreateHorse)
+	router.POST("/horse", handlers.CreateHorse)
 
-	horse := api.Horse{}
+	horse := models.Horse{}
 
 	jsonValue, _ := json.Marshal(horse)
 	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
@@ -28,7 +29,7 @@ func TestCreateHorse(t *testing.T) {
 	if status := responseRecorder.Code; status != http.StatusCreated {
 		t.Errorf("Expected status %d, got %d", http.StatusCreated, status)
 	}
-	var response api.JsonResponse
+	var response models.JsonResponse
 	json.NewDecoder(responseRecorder.Body).Decode(&response)
 
 	if response.Data == nil {

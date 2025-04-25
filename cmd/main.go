@@ -1,18 +1,30 @@
 package main
 
 import (
-	"api/api"
+	"api/api/handlers"
+	middleware "api/api/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	api.InitDB()
-	r := gin.Default()
+	handlers.InitDB()
+	router := gin.Default()
 
-	//routes
-	r.POST("/horse", api.CreateHorse)
-	r.GET("/horses", api.GetHorses)
+	// Public routes
+	router.POST("/login", handlers.Login)
+	router.PUT("/signup", handlers.SignUp)
 
-	r.Run("localhost:8080")
+	// protected routes
+	protected := router.Group("/", middleware.JWTAuthMiddleware())
+	{
+		protected.POST("/horse", handlers.CreateHorse)
+		protected.GET("/horses", handlers.GetHorses)
+		protected.PUT("/user", handlers.UpdateUser)
+		protected.DELETE("/horse/:id", handlers.DeleteHorse)
+		protected.POST("/group", handlers.CreateGroup)
+
+	}
+
+	router.Run("localhost:8080")
 }
