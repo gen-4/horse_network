@@ -11,7 +11,7 @@ import (
 	"api/api/models"
 )
 
-func TestCreateHorse(t *testing.T) {
+func TestUpdateAccount(t *testing.T) {
 	SetupTestDB()
 	user := AddUser(
 		"Albert",
@@ -23,33 +23,26 @@ func TestCreateHorse(t *testing.T) {
 		[]models.Role{GetRoleByName(models.USER)},
 	)
 
-	horse := models.Horse{
-		Name:  "Frederik",
-		Age:   12,
-		Breed: "PRI",
+	updateUser := models.UpdateUser{
+		Username: "Ozuna",
+		Country:  "PR",
 	}
 
 	router := GetRoutes()
 	token := LogUser(router, user)
-	jsonValue, _ := json.Marshal(horse)
-	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(updateUser)
+	req, _ := http.NewRequest("PUT", "/user", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	recorder := httptest.NewRecorder()
 	router.ServeHTTP(recorder, req)
 
-	if status := recorder.Code; status != http.StatusCreated {
-		t.Errorf("Expected status %d, got %d", http.StatusCreated, status)
-	}
-	var response models.JsonResponse
-	json.NewDecoder(recorder.Body).Decode(&response)
-
-	if response.Data == nil {
-		t.Errorf("Expected horse data, got nil")
+	if status := recorder.Code; status != http.StatusOK {
+		t.Errorf("Expected status %d, got %d", http.StatusOK, status)
 	}
 }
 
-func TestCreateHorseNoName(t *testing.T) {
+func TestUpdateAccountWrongUserName(t *testing.T) {
 	SetupTestDB()
 	user := AddUser(
 		"Albert",
@@ -61,15 +54,15 @@ func TestCreateHorseNoName(t *testing.T) {
 		[]models.Role{GetRoleByName(models.USER)},
 	)
 
-	horse := models.Horse{
-		Age:   12,
-		Breed: "PRI",
+	updateUser := models.UpdateUser{
+		Username: "Oz",
+		Country:  "PR",
 	}
 
 	router := GetRoutes()
 	token := LogUser(router, user)
-	jsonValue, _ := json.Marshal(horse)
-	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(updateUser)
+	req, _ := http.NewRequest("PUT", "/user", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	recorder := httptest.NewRecorder()
@@ -80,7 +73,7 @@ func TestCreateHorseNoName(t *testing.T) {
 	}
 }
 
-func TestCreateHorseNameTooShort(t *testing.T) {
+func TestUpdateAccountWrongEmail(t *testing.T) {
 	SetupTestDB()
 	user := AddUser(
 		"Albert",
@@ -92,16 +85,14 @@ func TestCreateHorseNameTooShort(t *testing.T) {
 		[]models.Role{GetRoleByName(models.USER)},
 	)
 
-	horse := models.Horse{
-		Name:  "Fe",
-		Age:   12,
-		Breed: "PRI",
+	updateUser := models.UpdateUser{
+		Mail: "ozuna.example.com",
 	}
 
 	router := GetRoutes()
 	token := LogUser(router, user)
-	jsonValue, _ := json.Marshal(horse)
-	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(updateUser)
+	req, _ := http.NewRequest("PUT", "/user", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	recorder := httptest.NewRecorder()
@@ -112,7 +103,7 @@ func TestCreateHorseNameTooShort(t *testing.T) {
 	}
 }
 
-func TestCreateHorseIncorrectGender(t *testing.T) {
+func TestUpdateAccountWrongGender(t *testing.T) {
 	SetupTestDB()
 	user := AddUser(
 		"Albert",
@@ -124,16 +115,44 @@ func TestCreateHorseIncorrectGender(t *testing.T) {
 		[]models.Role{GetRoleByName(models.USER)},
 	)
 
-	horse := models.Horse{
-		Name:   "Frederik",
-		Age:    1,
-		Gender: "fem",
+	updateUser := models.UpdateUser{
+		Gender: "male",
 	}
 
 	router := GetRoutes()
 	token := LogUser(router, user)
-	jsonValue, _ := json.Marshal(horse)
-	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
+	jsonValue, _ := json.Marshal(updateUser)
+	req, _ := http.NewRequest("PUT", "/user", bytes.NewBuffer(jsonValue))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, req)
+
+	if status := recorder.Code; status != http.StatusBadRequest {
+		t.Errorf("Expected status %d, got %d", http.StatusBadRequest, status)
+	}
+}
+
+func TestUpdateAccountWrongCountry(t *testing.T) {
+	SetupTestDB()
+	user := AddUser(
+		"Albert",
+		25,
+		"US",
+		"albert@example.com",
+		"m",
+		"albert_pass",
+		[]models.Role{GetRoleByName(models.USER)},
+	)
+
+	updateUser := models.UpdateUser{
+		Country: "United Kingdom",
+	}
+
+	router := GetRoutes()
+	token := LogUser(router, user)
+	jsonValue, _ := json.Marshal(updateUser)
+	req, _ := http.NewRequest("PUT", "/user", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	recorder := httptest.NewRecorder()
