@@ -4,7 +4,7 @@ type Horse struct {
 	ID     uint   `json:"id" gorm:"primaryKey"`
 	Name   string `json:"name" gorm:"not null;" binding:"required,min=3"`
 	Breed  string `json:"breed"`
-	Age    uint   `json:"age" binding:"omitempty,min=1"`
+	Age    uint   `json:"age"`
 	Gender string `json:"gender" binding:"omitempty,oneof=m f"`
 	Owner  *uint  `json:"owner" gorm:"not null;"`
 }
