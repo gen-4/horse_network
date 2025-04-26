@@ -46,7 +46,7 @@ type UpdateUser struct {
 	Username string `json:"username" binding:"omitempty,min=3"`
 	Mail     string `json:"mail" binding:"omitempty,email"`
 	Password string `json:"omitempty,password"`
-	Age      uint   `json:"age" binding:"omitempty,min=1"`
+	Age      uint   `json:"age"`
 	Gender   string `json:"gender" binding:"omitempty,oneof=m f"`
 	Country  string `json:"country" binding:"omitempty,iso3166_1_alpha2"`
 }

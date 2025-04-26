@@ -1,24 +1,14 @@
 package tests
 
 import (
-	"api/api/handlers"
-	"api/api/models"
+	"os"
+	"testing"
 
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"api/config"
 )
 
-func SetupTestDB() {
-	var err error
-	handlers.DB, err = gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect test database")
-	}
-	handlers.DB.AutoMigrate(&models.Horse{})
-}
-
-func AddHorse() models.Horse {
-	horse := models.Horse{}
-	handlers.DB.Create(&horse)
-	return horse
+func TestMain(m *testing.M) {
+	config.Config()
+	code := m.Run()
+	os.Exit(code)
 }

@@ -3,11 +3,13 @@ package main
 import (
 	"api/api/handlers"
 	middleware "api/api/middlewares"
+	"api/config"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	config.Config()
 	handlers.InitDB()
 	router := gin.Default()
 
