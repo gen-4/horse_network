@@ -3,34 +3,45 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"api/api/handlers"
 	"api/api/models"
-
-	"github.com/gin-gonic/gin"
 )
 
 func TestCreateHorse(t *testing.T) {
 	SetupTestDB()
-	router := gin.Default()
-	router.POST("/horse", handlers.CreateHorse)
+	user := AddUser(
+		"Albert", 25,
+		"US",
+		"albert@example.com",
+		"m",
+		"albert_pass",
+		[]models.Role{GetRoleByName(models.USER)},
+	)
 
-	horse := models.Horse{}
+	horse := models.Horse{
+		Name:  "Frederik",
+		Age:   12,
+		Breed: "PRI",
+	}
 
+	router := GetRoutes()
+	token := LogUser(router, user)
 	jsonValue, _ := json.Marshal(horse)
 	req, _ := http.NewRequest("POST", "/horse", bytes.NewBuffer(jsonValue))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
-	responseRecorder := httptest.NewRecorder()
-	router.ServeHTTP(responseRecorder, req)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, req)
 
-	if status := responseRecorder.Code; status != http.StatusCreated {
+	if status := recorder.Code; status != http.StatusCreated {
 		t.Errorf("Expected status %d, got %d", http.StatusCreated, status)
 	}
 	var response models.JsonResponse
-	json.NewDecoder(responseRecorder.Body).Decode(&response)
+	json.NewDecoder(recorder.Body).Decode(&response)
 
 	if response.Data == nil {
 		t.Errorf("Expected horse data, got nil")

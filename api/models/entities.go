@@ -9,6 +9,13 @@ type Horse struct {
 	Owner  *uint  `json:"owner" gorm:"not null;"`
 }
 
+type RoleEnum string
+
+const (
+	ADMIN RoleEnum = "ADMIN"
+	USER  RoleEnum = "USER"
+)
+
 type Role struct {
 	ID   uint   `json:"id" gorm:"primaryKey"`
 	Name string `json:"name" gorm:"unique;not null;"`
