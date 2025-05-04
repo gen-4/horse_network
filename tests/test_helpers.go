@@ -15,6 +15,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const UNEXISTENT_ID = -1
+
 func SetupTestDB() {
 	var err error
 	handlers.DB, err = gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
