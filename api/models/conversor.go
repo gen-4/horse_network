@@ -39,3 +39,15 @@ func UpdateUserToUser(uUser UpdateUser) User {
 		Country:  uUser.Country,
 	}
 }
+
+func ToGroupDto(group Group) GroupDto {
+	return GroupDto{
+		ID:    group.ID,
+		Name:  group.Name,
+		Users: uint(len(group.Users)),
+	}
+}
+
+func ToGroupDtos(groups []Group) []GroupDto {
+	return utils.Map(groups, ToGroupDto)
+}

@@ -27,6 +27,7 @@ func main() {
 		protected.POST("/group", handlers.CreateGroup)
 		protected.POST("/group/:id/join", handlers.JoinGroup)
 		protected.POST("/group/:id/leave", handlers.LeaveGroup)
+		protected.GET("/groups", handlers.DiscoverGroups)
 	}
 
 	router.Run("localhost:8080")
