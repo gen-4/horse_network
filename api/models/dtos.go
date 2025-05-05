@@ -50,3 +50,9 @@ type UpdateUser struct {
 	Gender   string `json:"gender" binding:"omitempty,oneof=m f"`
 	Country  string `json:"country" binding:"omitempty,iso3166_1_alpha2"`
 }
+
+type GroupDto struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Users uint   `json:"user_number"`
+}

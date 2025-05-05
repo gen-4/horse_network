@@ -15,6 +15,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const UNEXISTENT_ID = -1
+
 func SetupTestDB() {
 	var err error
 	handlers.DB, err = gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
@@ -69,6 +71,16 @@ func AddUser(
 	return user
 }
 
+func AddGroup(groupName string, user models.User) models.Group {
+	group := models.Group{
+		Name:  groupName,
+		Users: []models.User{user},
+	}
+	handlers.DB.Create(&group)
+
+	return group
+}
+
 func EncryptPass(pass string) string {
 	encryptedPass, _ := bcrypt.GenerateFromPassword([]byte(pass), handlers.HASH_COST)
 	return string(encryptedPass)
@@ -95,6 +107,7 @@ func GetRoutes() *gin.Engine {
 		protected.POST("/group", handlers.CreateGroup)
 		protected.POST("/group/:id/join", handlers.JoinGroup)
 		protected.POST("/group/:id/leave", handlers.LeaveGroup)
+		protected.GET("/groups", handlers.DiscoverGroups)
 	}
 
 	return router

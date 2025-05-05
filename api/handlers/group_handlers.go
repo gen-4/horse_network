@@ -3,9 +3,12 @@ package handlers
 import (
 	"api/api/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+const GROUP_BATCH_SIZE = 15
 
 func CreateGroup(context *gin.Context) {
 	userId := context.Keys["user_id"].(uint)
@@ -76,4 +79,24 @@ func LeaveGroup(context *gin.Context) {
 	}
 
 	models.ResponseJSON(context, http.StatusOK, "Group left", nil)
+}
+
+func DiscoverGroups(context *gin.Context) {
+	underIndex, err := strconv.ParseUint(context.DefaultQuery("index", "0"), 10, 0)
+	if err != nil {
+		models.ResponseJSON(context, http.StatusBadRequest, "Wrong index parameter", nil)
+	}
+
+	DB.Debug()
+	var groups []models.Group
+	err = DB.Preload("Users").
+		Order("groups.name ASC").
+		Limit(GROUP_BATCH_SIZE).
+		Offset(int(underIndex)).
+		Find(&groups).Error
+	if err != nil {
+		models.ResponseJSON(context, http.StatusInternalServerError, "Unable to retrieve any group", nil)
+	}
+
+	models.ResponseJSON(context, http.StatusOK, "Group batch retrieved", models.ToGroupDtos(groups))
 }
