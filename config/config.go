@@ -3,7 +3,7 @@ package config
 import (
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +24,7 @@ func getEnv() string {
 	}
 
 	if err != nil {
-		log.Println("WARNING: Unable to read .env file")
+		slog.Warn("Unable to read .env file")
 	} else {
 		environment = os.Getenv("ENVIRONMENT")
 	}
@@ -34,8 +34,8 @@ func getEnv() string {
 
 func Config() {
 	var environment string = getEnv()
-	log.SetOutput(os.Stdout)
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
 
 	switch environment {
 	case "dev":
@@ -47,12 +47,13 @@ func Config() {
 	case "pro":
 		f, err := os.OpenFile("ginlogs.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
-			log.Fatalf("Error opening file: %v", err)
+			slog.Error("Error opening file: %v", err)
 		}
 		defer f.Close()
-		log.SetOutput(f)
+		logger := slog.New(slog.NewJSONHandler(f, nil))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	log.Println(fmt.Sprintf("INFO: Running in %s environment", environment))
+	slog.Info(fmt.Sprintf("Running in %s environment", environment))
 }

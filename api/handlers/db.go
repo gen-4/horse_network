@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"api/api/models"
@@ -16,7 +16,7 @@ var DB *gorm.DB
 
 func checkError(err error) {
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		slog.Error("Failed to connect to database:", err)
 	}
 }
 
@@ -50,6 +50,6 @@ func InitDB() {
 		&models.Horse{},
 		&models.Group{},
 	); err != nil {
-		log.Fatal("Failed to migrate schema:", err)
+		slog.Error("Failed to migrate schema:", err)
 	}
 }
