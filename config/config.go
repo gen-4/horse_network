@@ -10,6 +10,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const LOG_FILE = "ginlogs.log"
+
+var fileDescriptor *os.File
+
 func getEnv() string {
 	var err error
 	environment := "dev"
@@ -39,13 +43,21 @@ func Config() {
 
 	switch environment {
 	case "dev":
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.DebugMode)
 
 	case "test":
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.TestMode)
 
 	case "pro":
-		f, err := os.OpenFile("ginlogs.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		f, err := os.OpenFile(LOG_FILE, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
 			slog.Error("Error opening file: %v", err)
 		}
@@ -56,4 +68,10 @@ func Config() {
 	}
 
 	slog.Info(fmt.Sprintf("Running in %s environment", environment))
+}
+
+func CloseConfig() {
+	if fileDescriptor != nil {
+		fileDescriptor.Close()
+	}
 }

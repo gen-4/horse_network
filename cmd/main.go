@@ -10,6 +10,7 @@ import (
 
 func main() {
 	config.Config()
+	defer config.CloseConfig()
 	handlers.InitDB()
 	router := gin.Default()
 
@@ -17,7 +18,7 @@ func main() {
 	router.POST("/login", handlers.Login)
 	router.PUT("/signup", handlers.SignUp)
 
-	// protected routes
+	// Protected routes
 	protected := router.Group("/", middleware.JWTAuthMiddleware())
 	{
 		protected.POST("/horse", handlers.CreateHorse)
@@ -28,6 +29,9 @@ func main() {
 		protected.POST("/group/:id/join", handlers.JoinGroup)
 		protected.POST("/group/:id/leave", handlers.LeaveGroup)
 		protected.GET("/groups", handlers.DiscoverGroups)
+
+		// Chat Web Socket
+		protected.GET("/group/:id/connect", handlers.StablishWSConnection)
 	}
 
 	router.Run("localhost:8080")
