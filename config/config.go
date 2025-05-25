@@ -3,12 +3,16 @@ package config
 import (
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
+
+const LOG_FILE = "ginlogs.log"
+
+var fileDescriptor *os.File
 
 func getEnv() string {
 	var err error
@@ -24,7 +28,7 @@ func getEnv() string {
 	}
 
 	if err != nil {
-		log.Println("WARNING: Unable to read .env file")
+		slog.Warn("Unable to read .env file")
 	} else {
 		environment = os.Getenv("ENVIRONMENT")
 	}
@@ -34,25 +38,40 @@ func getEnv() string {
 
 func Config() {
 	var environment string = getEnv()
-	log.SetOutput(os.Stdout)
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
 
 	switch environment {
 	case "dev":
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.DebugMode)
 
 	case "test":
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		}))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.TestMode)
 
 	case "pro":
-		f, err := os.OpenFile("ginlogs.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		f, err := os.OpenFile(LOG_FILE, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
-			log.Fatalf("Error opening file: %v", err)
+			slog.Error("Error opening file: %v", err)
 		}
 		defer f.Close()
-		log.SetOutput(f)
+		logger := slog.New(slog.NewJSONHandler(f, nil))
+		slog.SetDefault(logger)
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	log.Println(fmt.Sprintf("INFO: Running in %s environment", environment))
+	slog.Info(fmt.Sprintf("Running in %s environment", environment))
+}
+
+func CloseConfig() {
+	if fileDescriptor != nil {
+		fileDescriptor.Close()
+	}
 }

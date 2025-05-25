@@ -51,3 +51,15 @@ func ToGroupDto(group Group) GroupDto {
 func ToGroupDtos(groups []Group) []GroupDto {
 	return utils.Map(groups, ToGroupDto)
 }
+
+func ToMessageDto(message Message) MessageDto {
+	return MessageDto{
+		Username: message.User.Username,
+		Time:     message.CreatedAt.String(),
+		Message:  message.Message,
+	}
+}
+
+func ToMessageDtos(messages []Message) []MessageDto {
+	return utils.Map(messages, ToMessageDto)
+}

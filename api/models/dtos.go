@@ -56,3 +56,9 @@ type GroupDto struct {
 	Name  string `json:"name"`
 	Users uint   `json:"user_number"`
 }
+
+type MessageDto struct {
+	Username string `json:"username"`
+	Time     string `json:"time"`
+	Message  string `json:"message"`
+}

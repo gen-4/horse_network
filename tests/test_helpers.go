@@ -28,6 +28,7 @@ func SetupTestDB() {
 		&models.Role{},
 		&models.Horse{},
 		&models.Group{},
+		&models.Message{},
 	)
 
 	roles := []models.Role{
