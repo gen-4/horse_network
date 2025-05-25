@@ -29,6 +29,7 @@ func main() {
 		protected.POST("/group/:id/join", handlers.JoinGroup)
 		protected.POST("/group/:id/leave", handlers.LeaveGroup)
 		protected.GET("/groups", handlers.DiscoverGroups)
+		protected.GET("/group/:id/history", handlers.GetHistory)
 
 		// Chat Web Socket
 		protected.GET("/group/:id/connect", handlers.StablishWSConnection)

@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Horse struct {
 	ID     uint   `json:"id" gorm:"primaryKey"`
 	Name   string `json:"name" gorm:"not null;" binding:"required,min=3"`
@@ -37,4 +39,14 @@ type Group struct {
 	ID    uint   `json:"id" gorm:"primaryKey"`
 	Name  string `json:"name" gorm:"not null;" binding:"required,min=3"`
 	Users []User `json:"users" gorm:"many2many:group_users; constraint:OnDelete:SET NULL;"`
+}
+
+type Message struct {
+	ID        uint   `json:"id" gorm:"primaryKey"`
+	Message   string `json:"message" gorm:"not null;" binding:"required,min=1"`
+	UserID    uint
+	User      User `json:"user" gorm:"constraint:OnDelete:SET NULL;"`
+	GroupID   uint
+	Group     Group     `json:"group" gorm:"constraint:OnDelete:SET NULL;"`
+	CreatedAt time.Time `json:"created_at"`
 }
