@@ -32,7 +32,7 @@ func main() {
 		protected.GET("/group/:id/history", handlers.GetHistory)
 
 		// Chat Web Socket
-		protected.GET("/group/:id/connect", handlers.StablishWSConnection)
+		protected.GET("/connect", handlers.StablishWSConnection)
 	}
 
 	router.Run("localhost:8080")

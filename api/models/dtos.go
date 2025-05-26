@@ -61,4 +61,5 @@ type MessageDto struct {
 	Username string `json:"username"`
 	Time     string `json:"time"`
 	Message  string `json:"message"`
+	Group    uint   `json:"group"`
 }
