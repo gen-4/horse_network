@@ -3,9 +3,9 @@ FROM debian:latest
 
 RUN mkdir /horse_network
 WORKDIR /horse_network
-COPY cmd/ .
-COPY api/ .
-COPY config/ .
+COPY cmd .
+COPY api .
+COPY config .
 COPY go.mod .
 COPY go.sum .
 
