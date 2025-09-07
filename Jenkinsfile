@@ -13,7 +13,7 @@ node {
 		echo 'Image built'
 	}
 
-	stage('Deploy horse_network app') {
+	stage('Deploying horse_network app') {
 		
 	}
 }
