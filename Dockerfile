@@ -9,6 +9,11 @@ COPY config .
 COPY go.mod .
 COPY go.sum .
 
+RUN ls /horse_network
+RUN ls
+RUN ls cmd
+RUN ls ./cmd
+
 RUN mkdir /var/log/horse_network
 RUN apt update
 RUN apt-get update -y && apt-get install ca-certificates -y
