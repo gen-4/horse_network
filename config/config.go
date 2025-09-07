@@ -10,7 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const LOG_FILE = "ginlogs.log"
+const LOG_FILE = "/var/log/horse_network/horse_network.log"
 
 var fileDescriptor *os.File
 
