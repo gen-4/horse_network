@@ -3,16 +3,7 @@ FROM debian:latest
 
 RUN mkdir /horse_network
 WORKDIR /horse_network
-COPY cmd .
-COPY api .
-COPY config .
-COPY go.mod .
 COPY go.sum .
-
-RUN ls /horse_network
-RUN ls
-RUN ls cmd
-RUN ls ./cmd
 
 RUN mkdir /var/log/horse_network
 RUN apt update
