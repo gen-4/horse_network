@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Might have to make this more flexible
 const LOG_FILE = "/var/log/horse_network/horse_network.log"
 
 var fileDescriptor *os.File
