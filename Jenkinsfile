@@ -9,8 +9,10 @@ node {
 
 	stage('Build image') {
 		echo 'Building image...'
+		ls -a
+		ls -a cmd
 		retry(3) {
-			app = docker.build("horse_network_image/latest")
+			app = docker.build("horse_network_image:latest")
 		}
 		echo 'Image built'
 	}
