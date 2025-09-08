@@ -1,1 +1,1 @@
-# horse_network
+# Horse Network
