@@ -5,7 +5,7 @@ RUN mkdir /horse_network
 RUN mkdir /var/log/horse_network
 
 WORKDIR /horse_network
-COPY cmd api config go.mod go.sum ./
+COPY ./cmd ./api ./config ./go.mod ./go.sum ./
 
 RUN ls -la /horse_network
 RUN ls -la /horse_network/cmd || echo "cmd directory missing"
