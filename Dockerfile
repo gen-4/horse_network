@@ -2,8 +2,8 @@ FROM debian:latest
 
 
 RUN mkdir /horse_network
+COPY cmd api config go.mod go.sum /horse_network/
 WORKDIR /horse_network
-COPY cmd api config go.mod go.sum ./
 
 RUN mkdir /var/log/horse_network
 RUN apt update
