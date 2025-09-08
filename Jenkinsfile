@@ -9,7 +9,6 @@ node {
 
 	stage('Build image') {
 		echo 'Building image...'
-		ls -a
 		retry(3) {
 			app = docker.build("horse_network_image:latest")
 		}

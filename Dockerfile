@@ -2,10 +2,11 @@ FROM debian:latest
 
 
 RUN mkdir /horse_network
-COPY cmd api config go.mod go.sum /horse_network/
-WORKDIR /horse_network
-
 RUN mkdir /var/log/horse_network
+
+WORKDIR /horse_network
+COPY cmd api config go.mod go.sum ./
+
 RUN apt update
 RUN apt-get update -y && apt-get install ca-certificates -y
 RUN apt install golang-go -y
