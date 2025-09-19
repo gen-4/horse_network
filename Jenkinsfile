@@ -12,7 +12,7 @@ node {
 	}
 
 	stage('Compile project') {
-		go build cmd/main.go
+		sh 'go build cmd/main.go'
 	}
 
 	stage('Build image') {
