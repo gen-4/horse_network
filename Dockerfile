@@ -5,12 +5,9 @@ RUN mkdir /horse_network
 RUN mkdir /var/log/horse_network
 
 WORKDIR /horse_network
-COPY . .
+COPY main .
 
 RUN apt update
 RUN apt-get update -y && apt-get install ca-certificates -y
-RUN apt install golang-go -y
-RUN go build ./cmd/main.go
-RUN rm -rf api  cmd  config go.mod  go.sum .gitignore .git .github tests LICENSE README.md Jenkinsfile Dockerfile docker
 
 ENTRYPOINT ["./main"]

@@ -11,6 +11,10 @@ node {
 		echo 'Repository cloned'
 	}
 
+	stage('Compile project') {
+		go build cmd/main.go
+	}
+
 	stage('Build image') {
 		echo 'Building image...'
 		retry(3) {
