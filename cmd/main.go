@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"api/api/handlers"
 	middleware "api/api/middlewares"
 	"api/config"
@@ -15,11 +17,12 @@ func main() {
 	router := gin.Default()
 
 	// Public routes
-	router.POST("/login", handlers.Login)
-	router.PUT("/signup", handlers.SignUp)
+	router.POST("/horse-network/login", handlers.Login)
+	router.PUT("/horse-network/signup", handlers.SignUp)
+	router.GET("/horse-network/healthcheck", func(c *gin.Context) { c.Status(http.StatusOK) })
 
 	// Protected routes
-	protected := router.Group("/", middleware.JWTAuthMiddleware())
+	protected := router.Group("/horse-network/", middleware.JWTAuthMiddleware())
 	{
 		protected.POST("/horse", handlers.CreateHorse)
 		protected.GET("/horses", handlers.GetHorses)
